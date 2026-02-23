@@ -1,0 +1,7 @@
+services:
+  builder:
+    build: .
+    volumes:
+      - ./dist:/export
+    container_name: kinopub-webos-builder
+    command: sh -c "cp -r /app/out/. /export/ && cp -r /app/build/. /export/webos/ && echo 'IPK and webos folder copied to dist/ success!'"

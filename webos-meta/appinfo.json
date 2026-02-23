@@ -9,5 +9,6 @@
   "largeIcon": "icon-large.png",
   "splashBackground": "splashBackground.png",
   "uiRevision": 2,
+  "version": "1.1.1",
   "disableBackHistoryAPI": true
 }
