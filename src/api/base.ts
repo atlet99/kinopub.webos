@@ -43,24 +43,47 @@ class BaseApiClient {
       : `http://${baseUrl}`;
   }
 
-  private async request<T>(method: 'GET' | 'POST', url: string, params?: Params, data?: Params) {
+  protected async tryRefreshTokens(): Promise<boolean> {
+    return false;
+  }
+
+  private async request<T>(
+    method: 'GET' | 'POST',
+    url: string,
+    params?: Params,
+    data?: Params,
+    retry = false,
+  ) {
+    const isGrantRequest = Boolean(params?.['grant_type']);
     const accessToken = this.getAccessToken();
 
-    if (accessToken && !params?.['grant_type']) {
+    if (accessToken && !isGrantRequest && !params?.['access_token']) {
       params = {
         ...params,
         access_token: accessToken,
       };
     }
 
+    const headers: Record<string, string> =
+      accessToken && !isGrantRequest ? { Authorization: `Bearer ${accessToken}` } : {};
+
     try {
       const response = await fetch(`${this.baseUrl}${url}?${normalizeParams(params)}`, {
         method,
+        headers,
         body: data && serialize(data),
       });
 
-      if (response.status === 401) {
+      if (response.status === 401 && !retry) {
+        if (await this.tryRefreshTokens()) {
+          return this.request<T>(method, url, params, data, true);
+        }
+
         this.clearTokens();
+
+        return {
+          error: 'unauthorized',
+        } as unknown as T;
       }
 
       const json = await response.json();

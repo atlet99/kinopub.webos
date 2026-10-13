@@ -146,6 +146,28 @@ class KinopubApiClient extends BaseApiClient {
     return response;
   }
 
+  protected async tryRefreshTokens() {
+    const refreshToken = this.getRefreshToken();
+
+    if (!refreshToken) {
+      return false;
+    }
+
+    try {
+      const response = await this.refreshTokens(refreshToken);
+
+      if (!response?.access_token || response.error) {
+        return false;
+      }
+
+      await this.saveTokens(response);
+
+      return true;
+    } catch (ex) {
+      return false;
+    }
+  }
+
   /**
    * Получение device_code
    */
