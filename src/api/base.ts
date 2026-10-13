@@ -76,6 +76,10 @@ class BaseApiClient {
 
       if (response.status === 401 && !retry) {
         if (await this.tryRefreshTokens()) {
+          if (params) {
+            delete params.access_token;
+          }
+
           return this.request<T>(method, url, params, data, true);
         }
 

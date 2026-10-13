@@ -6,6 +6,8 @@ import toUpper from 'lodash/toUpper';
 import { Audio, Streaming, Subtitle } from 'api';
 import { AudioTrack, SourceTrack, SubtitleTrack } from 'components/media';
 
+import { applyAc3Default, resolveFileUrl } from 'utils/mediaUrl';
+
 const formatIdx = (idx: number) => (idx < 10 ? `0${idx}` : idx);
 
 export function mapAudios(audios: Audio[], ac3ByDefault?: boolean, savedAudioName?: string): AudioTrack[] {
@@ -31,10 +33,11 @@ export function mapSources(
   files: { url: string | { [key in Streaming]?: string }; quality?: string }[],
   streamingType?: Streaming,
   savedSourceName?: string,
+  ac3ByDefault?: boolean,
 ): SourceTrack[] {
   return orderBy(
     map(files, (file) => {
-      const src = (typeof file.url === 'string' ? file.url : file.url[streamingType!] || file.url.http!) as string;
+      const src = applyAc3Default(resolveFileUrl(file, streamingType), ac3ByDefault, streamingType);
       const name = file.quality!;
 
       return {

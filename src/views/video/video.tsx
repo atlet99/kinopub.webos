@@ -86,7 +86,7 @@ const VideoView: React.FC = () => {
             description: getItemDescription(item, currentVideo, season),
             poster: item.posters.wide || item.posters.big,
             audios: mapAudios(currentVideo.audios, isAC3ByDefaultActive, savedAudioName),
-            sources: mapSources(currentVideoLinks.data.files, streamingType, savedSourceName),
+            sources: mapSources(currentVideoLinks.data.files, streamingType, savedSourceName, isAC3ByDefaultActive),
             subtitles: mapSubtitles(currentVideoLinks.data.subtitles, isForcedByDefaultActive, savedSubtitleName),
             startTime: currentVideo.watching.status === WatchingStatus.Watching ? currentVideo.watching.time : 0,
           } as PlayerProps)
