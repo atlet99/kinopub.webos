@@ -34,6 +34,7 @@ export function mapSources(
   streamingType?: Streaming,
   savedSourceName?: string,
   ac3ByDefault?: boolean,
+  preferredQuality?: string,
 ): SourceTrack[] {
   return orderBy(
     map(files, (file) => {
@@ -44,7 +45,7 @@ export function mapSources(
         src,
         name,
         type: src.includes('.m3u8') ? 'application/x-mpegURL' : 'video/mp4',
-        default: savedSourceName === name,
+        default: savedSourceName === name || (!savedSourceName && Boolean(preferredQuality) && name === preferredQuality),
       };
     }),
     ({ name }) => parseInt(name),

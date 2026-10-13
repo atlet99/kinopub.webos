@@ -61,6 +61,7 @@ const VideoView: React.FC = () => {
   const { watchingMarkTimeAsync } = useApiMutation('watchingMarkTime');
   const [streamingType] = useStorageState<Streaming>('streaming_type');
   const [isAC3ByDefaultActive] = useStorageState<boolean>('is_ac3_by_default_active');
+  const [streamQuality] = useStorageState<string>('stream_quality');
   const [isForcedByDefaultActive] = useStorageState<boolean>('is_forced_by_default_active');
   const [savedAudioName, setSavedAudioName] = useStorageState<string>(`item_${item.id}_saved_audio_name`);
   const [savedSourceName, setSavedSourceName] = useStorageState<string>(`item_${item.id}_saved_source_name`);
@@ -86,7 +87,7 @@ const VideoView: React.FC = () => {
             description: getItemDescription(item, currentVideo, season),
             poster: item.posters.wide || item.posters.big,
             audios: mapAudios(currentVideo.audios, isAC3ByDefaultActive, savedAudioName),
-            sources: mapSources(currentVideoLinks.data.files, streamingType, savedSourceName, isAC3ByDefaultActive),
+            sources: mapSources(currentVideoLinks.data.files, streamingType, savedSourceName, isAC3ByDefaultActive, streamQuality),
             subtitles: mapSubtitles(currentVideoLinks.data.subtitles, isForcedByDefaultActive, savedSubtitleName),
             startTime: currentVideo.watching.status === WatchingStatus.Watching ? currentVideo.watching.time : 0,
           } as PlayerProps)
@@ -97,6 +98,7 @@ const VideoView: React.FC = () => {
       currentVideo,
       currentVideoLinks?.data,
       streamingType,
+      streamQuality,
       isAC3ByDefaultActive,
       isForcedByDefaultActive,
       savedAudioName,
