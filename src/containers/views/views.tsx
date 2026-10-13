@@ -5,6 +5,7 @@ import Spinner from 'components/spinner';
 import Text from 'components/text';
 import useButtonEffect from 'hooks/useButtonEffect';
 import useDeviceAuthorizationEffect, { AuthorizationStep } from 'hooks/useDeviceAuthorizationEffect';
+import useDeviceCapabilitiesEffect from 'hooks/useDeviceCapabilitiesEffect';
 import { PATHS } from 'routes';
 
 const Views: React.FC = ({ children, ...props }) => {
@@ -53,6 +54,7 @@ const Views: React.FC = ({ children, ...props }) => {
 
   useButtonEffect('Back', handleBackButtonClick);
   useDeviceAuthorizationEffect(handleAuthorization);
+  useDeviceCapabilitiesEffect();
 
   if (showSpinner) {
     return <Spinner />;
